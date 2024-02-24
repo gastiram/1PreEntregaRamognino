@@ -1,8 +1,21 @@
 import { Router } from "express";
 import ProductManager from "../components/ProductManager.js";
+import { read } from "fs";
 
 const ProductRouter = Router();
 const product = new ProductManager();
+const readProducts = product.readProducts();
+
+ProductRouter.get("/", async (req, res) => {
+
+    let limit = parseInt(req.query.limit);
+    if(!limit) return res.send(await readProducts)
+
+    let allProducts = await readProducts
+    let productLimit = allProducts.slice(0, limit)
+    res.send(productLimit);
+
+});
 
 
 ProductRouter.get("/", async (req, res) => {
